@@ -1,6 +1,8 @@
 package painter
 
 import (
+	"golang.org/x/image/draw"
+	"image"
 	"image/color"
 
 	"golang.org/x/exp/shiny/screen"
@@ -10,6 +12,44 @@ import (
 type Operation interface {
 	// Do виконує зміну операції, повертаючи true, якщо текстура вважається готовою для відображення.
 	Do(t screen.Texture) (ready bool)
+}
+
+type Rectangle struct {
+	X1, Y1, X2, Y2 int
+}
+
+func (op *Rectangle) Do(t screen.Texture) bool {
+	t.Fill(image.Rect(op.X1, op.Y1, op.X2, op.Y2), color.Black, screen.Src)
+	return false
+}
+
+type Figure struct {
+	X, Y int
+	C    color.RGBA
+}
+
+func (op *Figure) Do(t screen.Texture) bool {
+	t.Fill(image.Rect(op.X-150, op.Y-100, op.X+150, op.Y), op.C, draw.Src)
+	t.Fill(image.Rect(op.X-50, op.Y, op.X+50, op.Y+100), op.C, draw.Src)
+	return false
+}
+
+type Move struct {
+	X, Y    int
+	Figures []*Figure
+}
+
+func ResetScreen(t screen.Texture) {
+	t.Fill(t.Bounds(), color.Black, draw.Src)
+}
+
+func (op *Move) Do(t screen.Texture) bool {
+	for i := range op.Figures {
+		op.Figures[i].X += op.X
+		op.Figures[i].Y += op.Y
+		op.Figures[i].Do(t)
+	}
+	return false
 }
 
 // OperationList групує список операції в одну.
