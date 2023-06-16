@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scripts</title>
+</head>
+<body>
+<button onclick="drawGreenRamochka()">
+Green ramochka
+</button>
+
+<button onclick="drawMovingFigure()">
+    drawMovingFigure
+</button>
+</body>
+<script>
+    const url = "http://localhost:17000";
+    const commandHeader = "?cmd=";
+
+    async function drawGreenRamochka(){
+        await SendRequest(BuildUrl("green"));
+        await SendRequest(BuildUrl("bgrect 100 100 300 300"));
+        await SendRequest(getUpdateUrl())
+    }
+
+    async function drawMovingFigure(){
+        await SendRequest(BuildUrl("figure 200 200"))
+        await SendRequest(getUpdateUrl())
+        let centerX = 200;
+        let centerY = 200;
+        let radius = 100;
+        let degrees = 0;
+        setInterval(async () => {
+            let newX = centerX + radius * Math.cos(toRadians(degrees));
+            let newY = centerY + radius * Math.sin(toRadians(degrees));
+            console.log(newX, newY)
+            degrees += 45;
+            await SendRequest(BuildUrl(`move ${Math.round(newX)} ${Math.round(newY)}`));
+            await SendRequest(getUpdateUrl())
+        }, 1000)
+    }
+
+    function toRadians (angle) {
+        return angle * (Math.PI / 180);
+    }
+
+    async function SendRequest(requestUrl){
+        // const Http = new XMLHttpRequest()
+        // await Http.open("GET", requestUrl);
+        // await Http.setRequestHeader('Content-type', 'application/json');
+        // await Http.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        // await Http.setRequestHeader('Access-Control-Allow-Origin', '*');
+        // await Http.send()
+        await fetch(requestUrl, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+                "Access-Control-Allow-Origin": "*"
+            },
+            mode: 'no-cors'
+        }).then(function(response) {
+            return response;
+        }).then(function(ttt){
+            console.log(ttt)
+        });
+    }
+
+    function BuildUrl(command){
+        return url + "/" + commandHeader + command;
+    }
+
+    function getUpdateUrl(){
+        return BuildUrl("update");
+    }
+</script>
+</html>
