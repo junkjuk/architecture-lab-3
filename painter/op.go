@@ -45,8 +45,8 @@ func ResetScreen(t screen.Texture) {
 
 func (op *Move) Do(t screen.Texture) bool {
 	for i := range op.Figures {
-		op.Figures[i].X += op.X
-		op.Figures[i].Y += op.Y
+		op.Figures[i].X = op.X
+		op.Figures[i].Y = op.Y
 		op.Figures[i].Do(t)
 	}
 	return false
