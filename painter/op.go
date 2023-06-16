@@ -40,7 +40,7 @@ type Move struct {
 }
 
 func ResetScreen(t screen.Texture) {
-	t.Fill(t.Bounds(), color.Black, draw.Src)
+	t.Fill(t.Bounds(), color.White, draw.Src)
 }
 
 func (op *Move) Do(t screen.Texture) bool {
