@@ -1,9 +1,10 @@
 package painter
 
 import (
-	"golang.org/x/image/draw"
 	"image"
 	"image/color"
+
+	"golang.org/x/image/draw"
 
 	"golang.org/x/exp/shiny/screen"
 )
@@ -29,8 +30,8 @@ type Figure struct {
 }
 
 func (op *Figure) Do(t screen.Texture) bool {
-	t.Fill(image.Rect(op.X-150, op.Y-100, op.X+150, op.Y), op.C, draw.Src)
-	t.Fill(image.Rect(op.X-50, op.Y, op.X+50, op.Y+100), op.C, draw.Src)
+	t.Fill(image.Rect(op.X-75, op.Y-50, op.X+75, op.Y), op.C, draw.Src)
+	t.Fill(image.Rect(op.X-25, op.Y, op.X+25, op.Y+50), op.C, draw.Src)
 	return false
 }
 
